@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Overland Park Precipitation</title>
+    <!-- Load Plotly.js (No installation needed, just a CDN link) -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <!-- Load PapaParse (To parse CSV easily) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 20px auto; padding: 0 20px; }
+        h1 { color: #333; }
+        #chart { width: 100%; height: 500px; }
+    </style>
+</head>
+<body>
+    <h1>🌧️ Overland Park Precipitation</h1>
+    <p>Daily data from NOAA ACIS (Stations: KOJC, KIXD, KLWC, KMCI)</p>
+    <p>Last Updated: <span id="last-updated">Loading...</span></p>
+    
+    <div id="chart"></div>
+
+    <script>
+        // 1. URL to your raw CSV file
+        // When running locally, use relative path. On GitHub, it works the same.
+        const csvUrl = 'precipitation_data.csv';
+
+        // 2. Fetch and Parse CSV
+        Papa.parse(csvUrl, {
+            download: true,
+            header: true,
+            dynamicTyping: true,
+            complete: function(results) {
+                const data = results.data;
+                
+                // Remove empty rows if any
+                const cleanData = data.filter(row => row.date && row.station_id);
+
+                // 3. Group data by Station for Plotly
+                const stations = [...new Set(cleanData.map(d => d.station_id))];
+                const traces = stations.map(station => {
+                    const stationData = cleanData.filter(d => d.station_id === station);
+                    return {
+                        x: stationData.map(d => d.date),
+                        y: stationData.map(d => d.precip_in),
+                        mode: 'lines',
+                        name: station
+                    };
+                });
+
+                // 4. Render Chart
+                Plotly.newPlot('chart', traces, {
+                    title: 'Daily Precipitation Accumulation',
+                    xaxis: { title: 'Date' },
+                    yaxis: { title: 'Precipitation (in)' }
+                });
+
+                // Update "Last Updated" text
+                if (cleanData.length > 0) {
+                    const lastDate = cleanData[cleanData.length - 1].date;
+                    document.getElementById('last-updated').textContent = lastDate;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
