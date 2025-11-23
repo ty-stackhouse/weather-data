@@ -1,20 +1,163 @@
+<!DOCTYPE html>
+<html>
 <head>
+  <meta charset="utf-8">
+  <title>Weather Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  
+  <style>
+    /* --- EXPERT CSS LAYOUT --- */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f2f5;
+      color: #333;
+    }
+
+    h1 { margin-bottom: 20px; }
+
+    /* The Responsive Grid Container */
+    .dashboard-grid {
+      display: grid;
+      /* This magic line creates columns that fill space but wrap when smaller than 400px */
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      width: 100%;
+    }
+
+    /* The Card container for each chart */
+    .chart-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px; /* Modern rounded corners */
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-card h2 {
+      margin-top: 0;
+      font-size: 1rem;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* The actual div Vega draws into. Height is enforced here. */
+    .chart-container {
+      width: 100%;
+      height: 300px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-  <div id="vis"></div>
+
+  <h1>Precipitation Dashboard</h1>
+  
+  <div class="dashboard-grid">
+    
+    <div class="chart-card" style="grid-column: span 2;"> <h2>Timeline (Zoom & Pan Enabled)</h2>
+      <div id="vis-timeline" class="chart-container"></div>
+    </div>
+
+    <div class="chart-card">
+      <h2>Total Rainfall by Month</h2>
+      <div id="vis-monthly" class="chart-container"></div>
+    </div>
+    
+    <div class="chart-card">
+      <h2>Rain Intensity Distribution</h2>
+      <div id="vis-intensity" class="chart-container"></div>
+    </div>
+
+  </div>
+
   <script>
-    const spec = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "data": { "url": "https://raw.githubusercontent.com/ty-stackhouse/weather-data/refs/heads/main/precipitation_data.csv" }, // Reads directly from GitHub
-      "mark": "line",
-      "encoding": {
-        "x": {"field": "date", "type": "temporal"},
-        "y": {"field": "precip_in", "type": "quantitative"}
+    // --- CONFIGURATION ---
+    const DATA_URL = "https://raw.githubusercontent.com/ty-stackhouse/weather-data/refs/heads/main/precipitation_data.csv";
+    
+    // Common settings to ensure charts resize with the CSS grid
+    const commonConfig = {
+      width: "container",  // Crucial for responsiveness
+      height: 280,         // slightly less than CSS height to prevent scrollbars
+      autosize: { type: "fit", contains: "padding" },
+      background: "transparent"
+    };
+
+    // --- SPEC 1: ZOOMABLE TIMELINE ---
+    const specTimeline = {
+      $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+      data: { url: DATA_URL },
+      ...commonConfig,
+      mark: { type: "area", line: true, fillOpacity: 0.3 },
+      // Enables Zoom (wheel) and Pan (drag)
+      selection: {
+        grid: { type: "interval", bind: "scales" }
+      },
+      encoding: {
+        x: { 
+          field: "date", 
+          type: "temporal", 
+          axis: { title: null } 
+        },
+        y: { 
+          field: "precip_in", 
+          type: "quantitative", 
+          title: "Precipitation (in)" 
+        },
+        tooltip: [
+          { field: "date", type: "temporal", format: "%Y-%m-%d" },
+          { field: "precip_in", type: "quantitative", title: "Rain (in)" }
+        ]
       }
     };
-    vegaEmbed('#vis', spec);
+
+    // --- SPEC 2: MONTHLY TOTALS (Auto-Aggregated) ---
+    const specMonthly = {
+      $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+      data: { url: DATA_URL },
+      ...commonConfig,
+      mark: "bar",
+      encoding: {
+        // Extract Year-Month from your 'date' field automatically
+        x: { field: "date", timeUnit: "yearmonth", title: "Month" }, 
+        y: { field: "precip_in", aggregate: "sum", title: "Total Rain" },
+        color: { value: "#4c78a8" },
+        tooltip: [
+          { field: "date", timeUnit: "yearmonth", title: "Month" },
+          { field: "precip_in", aggregate: "sum", title: "Total" }
+        ]
+      }
+    };
+
+    // --- SPEC 3: INTENSITY HISTOGRAM ---
+    const specIntensity = {
+      $schema: "https://vega.github.io/schema/vega-lite/v5.json",
+      data: { url: DATA_URL },
+      ...commonConfig,
+      transform: [
+        { filter: "datum.precip_in > 0" } // Ignore dry days
+      ],
+      mark: "rect", // Heatmap style
+      encoding: {
+        x: { bin: { maxbins: 20 }, field: "precip_in", title: "Rain Amount (Bin)" },
+        y: { field: "date", timeUnit: "dayofweek", title: "Day of Week" },
+        color: { aggregate: "count", title: "Frequency" }
+      }
+    };
+
+    // --- RENDER ---
+    // 'actions: false' removes the "..." menu for a cleaner app-like look
+    vegaEmbed('#vis-timeline', specTimeline, {actions: false});
+    vegaEmbed('#vis-monthly', specMonthly, {actions: false});
+    vegaEmbed('#vis-intensity', specIntensity, {actions: false});
+
   </script>
 </body>
+</html>
