@@ -1,10 +1,9 @@
-name: Update Weather Data
+name: Update Data
 
 on:
   schedule:
-    # Run every day at 12:00 UTC (6:00 AM CST)
     - cron: '0 12 * * *'
-  workflow_dispatch: # Allows manual triggering
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -13,32 +12,25 @@ jobs:
   update-data:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      - name: Install requests
-        run: pip install requests
+      - run: pip install requests
 
-      # 1. If the CSV doesn't exist, run backfill first
-      - name: Check for data file
-        id: check_file
+      # Run your existing scripts
+      - name: Update Data
         run: |
           if [ ! -f "precipitation_data.csv" ]; then
-            echo "File not found, running backfill..."
             python backfill_weather.py
           else
-            echo "File found, running daily update..."
             python fetch_daily.py
           fi
 
-      # 2. Commit and push if there are changes
-      - name: Commit and Push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+      # Commit changes
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Weather data update"
+          commit_message: "Daily data update"
           file_pattern: "precipitation_data.csv"
