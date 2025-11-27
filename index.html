@@ -17,8 +17,22 @@
     <h1>🌧️ Overland Park Precipitation</h1>
     <p>Daily data from NOAA ACIS (Stations: KOJC, KIXD, KLWC, KMCI)</p>
     <p>Last Updated: <span id="last-updated">Loading...</span></p>
-    
+
+    <table id="precip-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Precipitation (in)</th>
+            </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+    </table>
+
     <div id="chart"></div>
+
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="table.js"></script>
 
     <script>
         // 1. URL to your raw CSV file
