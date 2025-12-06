@@ -32,8 +32,8 @@ jobs:
 
       # Pull latest changes before committing
       - run: git pull --rebase
-      - name: Commit changes
-      - uses: stefanzweifel/git-auto-commit-action@v5
+        name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Daily data update"
           file_pattern: "precipitation_data.csv"
