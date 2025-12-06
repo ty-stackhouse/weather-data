@@ -68,7 +68,10 @@
                 const cleanData = data.filter(row => row.date && row.station_id);
 
                 // Filter out rows with zero precipitation and only include KOJC station
-                const nonZeroData = cleanData.filter(row => row.station_id === "KOJC" && parseFloat(row.precip_in) !== 0);
+                let nonZeroData = cleanData.filter(row => row.station_id === "KOJC" && parseFloat(row.precip_in) !== 0);
+
+                // Sort nonZeroData by date in descending order
+                nonZeroData.sort((a, b) => new Date(b.date) - new Date(a.date));
 
                 // 3. Group data by Station for Plotly
                 const stations = [...new Set(cleanData.map(d => d.station_id))];
@@ -89,7 +92,20 @@
                     yaxis: { title: 'Precipitation (in)' }
                 });
 
-                // Update "Last Updated" text
+                // Render Table
+                renderTable(nonZeroData);
+
+                // Assuming you have a function to render the table
+                function renderTable(data) {
+                    const tableBody = document.getElementById('table-body');
+                    tableBody.innerHTML = ''; // Clear existing rows
+
+                    data.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${row.date}</td><td>${row.precip_in}</td>`;
+                        tableBody.appendChild(tr);
+                    });
+                }
                 if (nonZeroData.length > 0) {
                     const lastDate = nonZeroData[nonZeroData.length - 1].date;
                     document.getElementById('last-updated').textContent = lastDate;
