@@ -29,11 +29,10 @@ jobs:
             python get_daily_weather.py
           fi
           python get_daily_weather.py
-
-      # Pull latest changes before committing
-      - run: git pull --rebase
-        name: Commit changes
+      - name: Pull latest changes before committing
+        run: git pull --rebase --autostash
+      - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Daily data update"
-          file_pattern: "precipitation_data.csv"
+          file_pattern: "*.csv"
