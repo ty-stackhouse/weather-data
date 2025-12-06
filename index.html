@@ -67,6 +67,9 @@
                 // Remove empty rows if any
                 const cleanData = data.filter(row => row.date && row.station_id);
 
+                // Filter out rows with zero precipitation
+                const nonZeroData = cleanData.filter(row => parseFloat(row.precip_in) !== 0);
+
                 // 3. Group data by Station for Plotly
                 const stations = [...new Set(cleanData.map(d => d.station_id))];
                 const traces = stations.map(station => {
