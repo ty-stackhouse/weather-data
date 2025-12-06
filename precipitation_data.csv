@@ -1,4 +1,5 @@
-date,station_id,precip_in  # Date, Station ID, and Precipitation in inches
+date,station_id,precip_in
+# Date, Station ID, and Precipitation in inches
 2025-08-01,KOJC,0.0
 2025-08-02,KOJC,0.0
 2025-08-03,KOJC,0.001
