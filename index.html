@@ -100,9 +100,9 @@
                     tableBody.innerHTML = ''; // Clear existing rows
 
                     // Sort data by date in descending order
-                    data.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-                    data.forEach(row => {
+                    sortedData.forEach(row => {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `<td>${row.date}</td><td>${row.precip_in}</td>`;
                         tableBody.appendChild(tr);
