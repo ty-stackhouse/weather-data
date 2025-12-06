@@ -68,7 +68,7 @@
             complete: function(todayResults) {
                 const todayData = todayResults.data;
                 const todayPrecip = todayData.length > 0 ? todayData[0].precip_in : 0; // Get the precipitation value
-                document.getElementById('today-precip').textContent = `Today's precipitation so far is ${todayPrecip} in`;
+                document.getElementById('today-precip').textContent = `Today's precipitation so far is ${todayPrecip} inches`;
             }
         });
         Papa.parse(csvUrl, {
