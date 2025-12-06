@@ -28,6 +28,7 @@ jobs:
           else
             python get_daily_weather.py
           fi
+          python get_daily_weather.py
 
       # Commit changes
       - uses: stefanzweifel/git-auto-commit-action@v5
