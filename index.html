@@ -90,8 +90,8 @@
                 });
 
                 // Update "Last Updated" text
-                if (cleanData.length > 0) {
-                    const lastDate = cleanData[cleanData.length - 1].date;
+                if (nonZeroData.length > 0) {
+                    const lastDate = nonZeroData[nonZeroData.length - 1].date;
                     document.getElementById('last-updated').textContent = lastDate;
                 }
             }
