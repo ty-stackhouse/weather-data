@@ -11,7 +11,7 @@ STATIONS = [
     "KMCI"   # Kansas City Intl (Major hub, best data continuity)
 ]
 
-START_DATE = "2025-08-01"
+START_DATE = "2025-08-01"  # Change this to your desired start date
 END_DATE = datetime.date.today().strftime("%Y-%m-%d") # Today's date
 CSV_FILE = "precipitation_data.csv"
 

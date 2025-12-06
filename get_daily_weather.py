@@ -5,7 +5,7 @@ import os
 
 # Same stations as backfill
 STATIONS = ["KOJC", "KIXD", "KLWC", "KMCI"]
-CSV_FILE = "precipitation_data.csv"
+CSV_FILE = "precipitation_data.csv"  # Path to the CSV file for precipitation data
 
 def fetch_yesterday():
     url = "https://data.rcc-acis.org/StnData"
