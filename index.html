@@ -121,10 +121,12 @@
                         tr.innerHTML = `<td>${row.date}</td><td>${row.precip_in}</td>`;
                         tableBody.appendChild(tr);
                     });
-                }
-                if (nonZeroData.length > 0) {
-                    const lastDate = nonZeroData[0].date; // Get the first date since nonZeroData is sorted in descending order
-                    document.getElementById('last-updated').textContent = lastDate;
+
+                    // Update last updated date after rendering the table
+                    if (sortedData.length > 0) {
+                        const lastDate = sortedData[0].date; // Get the first date since sortedData is sorted in descending order
+                        document.getElementById('last-updated').textContent = lastDate;
+                    }
                 }
             }
         });
