@@ -128,8 +128,8 @@ function sortTable(column) {
 }
 
 function renderTable(data) {
-                    const tableBody = document.getElementById('table-body');
-                    tableBody.innerHTML = ''; // Clear existing rows
+    const tableBody = document.getElementById('table-body');
+    tableBody.innerHTML = ''; // Clear existing rows
 
     data.forEach(row => {
         const tr = document.createElement('tr');
@@ -137,18 +137,12 @@ function renderTable(data) {
         tableBody.appendChild(tr);
     });
 
-                    sortedData.forEach(row => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `<td>${row.date}</td><td>${row.precip_in}</td>`;
-                        tableBody.appendChild(tr);
-                    });
-
-                    // Update last updated date after rendering the table
-                    if (sortedData.length > 0) {
-                        const lastDate = sortedData[0].date; // Get the first date since sortedData is sorted in descending order
-                        document.getElementById('last-updated').textContent = lastDate;
-                    }
-                }
+    // Update last updated date after rendering the table
+    if (data.length > 0) {
+        const lastDate = data[0].date; // Get the first date since data is sorted in descending order
+        document.getElementById('last-updated').textContent = lastDate;
+    }
+}
             }
         });
     </script>
