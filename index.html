@@ -95,10 +95,12 @@
                 // Render Table
                 renderTable(nonZeroData);
 
-                // Assuming you have a function to render the table
                 function renderTable(data) {
                     const tableBody = document.getElementById('table-body');
                     tableBody.innerHTML = ''; // Clear existing rows
+
+                    // Sort data by date in descending order
+                    data.sort((a, b) => new Date(b.date) - new Date(a.date));
 
                     data.forEach(row => {
                         const tr = document.createElement('tr');
