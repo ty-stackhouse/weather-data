@@ -39,8 +39,8 @@
     <table id="precip-table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Precipitation (in)</th>
+                <th onclick="sortTable('date')">Date</th>
+                <th onclick="sortTable('precip_in')">Precipitation (in)</th>
             </tr>
         </thead>
         <tbody id="table-body"></tbody>
@@ -108,13 +108,34 @@
 
                 // Render Table
                 renderTable(nonZeroData);
+                sortTable('date'); // Default sort by date descending
 
-                function renderTable(data) {
+let currentSort = { column: 'date', order: 'desc' }; // Default sort
+
+function sortTable(column) {
+    const order = (currentSort.column === column && currentSort.order === 'desc') ? 'asc' : 'desc';
+    currentSort = { column, order };
+
+    const sortedData = [...nonZeroData].sort((a, b) => {
+        if (column === 'date') {
+            return order === 'desc' ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
+        } else if (column === 'precip_in') {
+            return order === 'desc' ? b.precip_in - a.precip_in : a.precip_in - b.precip_in;
+        }
+    });
+
+    renderTable(sortedData);
+}
+
+function renderTable(data) {
                     const tableBody = document.getElementById('table-body');
                     tableBody.innerHTML = ''; // Clear existing rows
 
-                    // Sort data by date in descending order
-                    const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+    data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${row.date}</td><td>${row.precip_in}</td>`;
+        tableBody.appendChild(tr);
+    });
 
                     sortedData.forEach(row => {
                         const tr = document.createElement('tr');
