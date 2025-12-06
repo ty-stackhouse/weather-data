@@ -27,6 +27,16 @@
         #precip-table th {
             background-color: #f2f2f2;
             font-weight: bold;
+            cursor: pointer;
+            position: relative;
+        }
+
+        #precip-table th span {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8em;
         }
     </style>
 </head>
@@ -39,8 +49,14 @@
     <table id="precip-table">
         <thead>
             <tr>
-                <th onclick="sortTable('date')">Date</th>
-                <th onclick="sortTable('precip_in')">Precipitation (in)</th>
+                <th onclick="sortTable('date')">
+                    Date 
+                    <span id="date-sort-indicator">▼</span>
+                </th>
+                <th onclick="sortTable('precip_in')">
+                    Precipitation (in)
+                    <span id="precip-sort-indicator"></span>
+                </th>
             </tr>
         </thead>
         <tbody id="table-body"></tbody>
@@ -111,21 +127,21 @@
                 sortTable('date'); // Default sort by date descending
                 let currentSort = { column: 'date', order: 'desc' }; // Default sort
 
-let currentSort = { column: 'date', order: 'desc' }; // Default sort
+                function sortTable(column) {
+                    const order = (currentSort.column === column && currentSort.order === 'desc') ? 'asc' : 'desc';
+                    currentSort = { column, order };
 
-function sortTable(column) {
-    const order = (currentSort.column === column && currentSort.order === 'desc') ? 'asc' : 'desc';
-    currentSort = { column, order };
+                    const sortedData = [...nonZeroData].sort((a, b) => {
+                        if (column === 'date') {
+                            return order === 'desc' ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
+                        } else if (column === 'precip_in') {
+                            return order === 'desc' ? b.precip_in - a.precip_in : a.precip_in - b.precip_in;
+                        }
+                        return 0;
+                    });
 
-    const sortedData = [...nonZeroData].sort((a, b) => {
-        if (column === 'date') {
-            return order === 'desc' ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
-        if (column === 'date') {
-            return order === 'desc' ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
-        } else if (column === 'precip_in') {
-            return order === 'desc' ? b.precip_in - a.precip_in : a.precip_in - b.precip_in;
-        }
-    });
+                    renderTable(sortedData);
+                }
 
     renderTable(sortedData);
 }
@@ -142,9 +158,15 @@ function renderTable(data) {
 
     // Update last updated date after rendering the table
     if (data.length > 0) {
-        const lastDate = data[0].date; // Get the first date since data is sorted in descending order
+        const lastDate = data[0].date;
         document.getElementById('last-updated').textContent = lastDate;
     }
+
+    // Update sorting indicators
+    document.getElementById('date-sort-indicator').textContent = 
+        currentSort.column === 'date' ? (currentSort.order === 'desc' ? '▼' : '▲') : '';
+    document.getElementById('precip-sort-indicator').textContent = 
+        currentSort.column === 'precip_in' ? (currentSort.order === 'desc' ? '▼' : '▲') : '';
 }
             }
         });
