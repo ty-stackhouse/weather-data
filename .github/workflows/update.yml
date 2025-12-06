@@ -28,6 +28,7 @@ jobs:
           else
             python get_daily_weather.py
           fi
+          python get_daily_weather.py
 
       # Pull latest changes before committing
       - run: git pull --rebase
