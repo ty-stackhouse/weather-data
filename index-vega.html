@@ -1,159 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Weather Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
-  
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: #f0f2f5;
-      color: #333;
-    }
-
-    h1 { margin-bottom: 20px; text-align: center; }
-
-    /* --- SINGLE COLUMN LAYOUT --- */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1fr; /* Force single column */
-      gap: 25px;
-      
-      /* Optional: Prevents the column from getting too wide on massive monitors */
-      max-width: 900px; 
-      margin: 0 auto; /* Centers the column */
-    }
-
-    .chart-card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .chart-card h2 {
-      margin-top: 0;
-      font-size: 1rem;
-      color: #555;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .chart-container {
-      width: 100%;
-      height: 300px;
-      margin-top: 10px;
-    }
-  </style>
+    <meta charset="UTF-<｜begin▁of▁sentence｜>8">
+    <title>Overland Park Precipitation</title>
+    <!-- Load Plotly.js   -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body  { font-family: sans-serif; max-width: 800px; margin: 20px auto; padding: 0 20px; }
+        h1  { color: #333; }
+         #chart { width: 100%; height: 500px; }
+    </style>
 </head>
 <body>
-
-  <h1>Precipitation Dashboard</h1>
-  
-  <div class="dashboard-grid">
+    <h1>🌧️ Overland Park Precipitation</h1>
+    <p>Daily data from NOAA ACIS (Station: KOJC)</p>
     
-    <div class="chart-card">
-      <h2>Daily Timeline (Zoom & Pan Enabled)</h2>
-      <div id="vis-timeline" class="chart-container"></div>
-    </div>
+    <div id="chart"></div>
 
-    <div class="chart-card">
-      <h2>Total Rainfall by Month</h2>
-      <div id="vis-monthly" class="chart-container"></div>
-    </div>
-    
-    <div class="chart-card">
-      <h2>Rain Intensity Distribution</h2>
-      <div id="vis-intensity" class="chart-container"></div>
-    </div>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script>
+        // 1. URL to your raw CSV file
+        const csvUrl = 'precipitation_data.csv';
+        
+        // Fetch and Parse CSV
+        fetch(csvUrl)
+            .then((response) => response.text())
+            .then((csvString) => {
+                let lines = csvString.split("\n");
+                
+                // Filter out rows with zero precipitation
+                const nonZeroData = lines.filter(line =>  line && parseFloat(line.split(",")[1]) !== 0);
 
-  </div>
-
-  <script>
-    const DATA_URL = "https://raw.githubusercontent.com/ty-stackhouse/weather-data/refs/heads/main/precipitation_data.csv";
-    
-    const commonConfig = {
-      width: "container",
-      height: 280,
-      autosize: { type: "fit", contains: "padding" },
-      background: "transparent"
-    };
-
-    // --- SPEC 1: DAILY TIMELINE ---
-    const specTimeline = {
-      $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-      data: { url: DATA_URL },
-      ...commonConfig,
-      mark: { type: "area", line: true, fillOpacity: 0.3 },
-      selection: {
-        grid: { type: "interval", bind: "scales" }
-      },
-      encoding: {
-        x: { 
-          field: "date", 
-          type: "temporal", 
-          // Forces the axis to treat data as specific days (Year-Month-Date)
-          timeUnit: "yearmonthdate", 
-          title: "Date"
-        },
-        y: { 
-          field: "precip_in", 
-          type: "quantitative", 
-          title: "Precipitation (in)" 
-        },
-        tooltip: [
-          { field: "date", type: "temporal", format: "%Y-%m-%d", title: "Date" },
-          { field: "precip_in", type: "quantitative", title: "Rain (in)" }
-        ]
-      }
-    };
-
-    // --- SPEC 2: MONTHLY TOTALS ---
-    const specMonthly = {
-      $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-      data: { url: DATA_URL },
-      ...commonConfig,
-      mark: "bar",
-      encoding: {
-        x: { field: "date", timeUnit: "yearmonth", title: "Month" }, 
-        y: { field: "precip_in", aggregate: "sum", title: "Total Rain" },
-        color: { value: "#4c78a8" },
-        tooltip: [
-          { field: "date", timeUnit: "yearmonth", title: "Month" },
-          { field: "precip_in", aggregate: "sum", title: "Total" }
-        ]
-      }
-    };
-
-    // --- SPEC 3: INTENSITY HEATMAP ---
-    const specIntensity = {
-      $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-      data: { url: DATA_URL },
-      ...commonConfig,
-      transform: [
-        { filter: "datum.precip_in > 0" }
-      ],
-      mark: "rect",
-      encoding: {
-        x: { bin: { maxbins: 20 }, field: "precip_in", title: "Rain Amount (Bin)" },
-        y: { field: "date", timeUnit: "dayofweek", title: "Day of Week" },
-        color: { aggregate: "count", title: "Frequency" }
-      }
-    };
-
-    vegaEmbed('#vis-timeline', specTimeline, {actions: false});
-    vegaEmbed('#vis-monthly', specMonthly, {actions: false});
-    vegaEmbed('#vis-intensity', specIntensity, {actions: false});
-
-  </script>
+                // Group data by Station for Plotly
+                let traces = [{
+                    x: nonZeroData.map(line => line.split(",")[0]),
+                    y: nonZeroData.map(line => parseFloat(line.split(",")[1])),
+                    mode: 'lines',
+                    name: 'KOJC'
+                }];
+                
+                // Render Chart
+                Plotly.newPlot('chart', traces, {
+                    title: 'Daily Precipitation Accumulation (Station: KOJC)',
+                    xaxis: { title: 'Date' },
+                    yaxis: { title: 'Precipitation  (in)' }
+                });
+            })
+            .catch((error) => console.log(error));
+    </script>
 </body>
 </html>
