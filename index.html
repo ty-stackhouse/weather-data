@@ -109,6 +109,7 @@
                 // Render Table
                 renderTable(nonZeroData);
                 sortTable('date'); // Default sort by date descending
+                let currentSort = { column: 'date', order: 'desc' }; // Default sort
 
 let currentSort = { column: 'date', order: 'desc' }; // Default sort
 
@@ -117,6 +118,7 @@ function sortTable(column) {
     currentSort = { column, order };
 
     const sortedData = [...nonZeroData].sort((a, b) => {
+        if (column === 'date') {
         if (column === 'date') {
             return order === 'desc' ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
         } else if (column === 'precip_in') {
