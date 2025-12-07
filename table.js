@@ -9,11 +9,16 @@ function renderTable(data) {
     const tableBody = document.getElementById('table-body');
     tableBody.innerHTML = '';
 
+    // Update today's precipitation status
+    const todayPrecip = data[0].precip_in;
+    const status = todayPrecip > 0 ? 'rain detected' : 'no rain';
+    document.getElementById('today-precip-status').textContent = status;
+
     data.forEach(row => {
         const rowElement = document.createElement('tr');
         rowElement.innerHTML = `
             <td>${row.date}</td>
-            <td>${row.precip_in}</td>
+            <td>${row.precip_in.toFixed(3)}</td>
         `;
         tableBody.appendChild(rowElement);
     });

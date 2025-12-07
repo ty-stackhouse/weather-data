@@ -47,6 +47,19 @@
             color: #1a73e8;
         }
         
+        .precip-status {
+            font-style: italic;
+            color: #666;
+        }
+        
+        .today-precipitation {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #1a73e8;
+        }
+        
         .last-updated {
             color: #666;
             font-size: 0.9em;
@@ -71,17 +84,17 @@
 </head>
 <body>
     <header>
-        <h1 id="page-title" class="main-heading">🌧️ Overland Park Precipitation Data</h1>
-        <p id="data-source" class="data-source">Daily precipitation data from NOAA ACIS (Stations: KOJC, KIXD, KLWC, KMCI)</p>
+        <h1 id="page-title" class="main-heading">🌧️ Overland Park Precipitation Data Dashboard</h1>
+        <p id="data-source" class="data-source">Daily precipitation data from NOAA ACIS (Stations: KOJC, KIXD, KLWC, KMCI) - Updated Daily</p>
     </header>
 
     <main>
         <section aria-labelledby="today-precip-heading">
             <h2 id="today-precip-heading">Today's Precipitation</h2>
-            <p id="today-precip" aria-live="polite" class="today-precipitation">Today's precipitation so far is <span id="today-precip-amount" class="precip-value">0</span> inches</p>
+            <p id="today-precip" aria-live="polite" class="today-precipitation">Today's precipitation so far is <span id="today-precip-amount" class="precip-value">0</span> inches (<span id="today-precip-status" class="precip-status">no rain</span>)</p>
         </section>
         <section aria-labelledby="precip-table-heading">
-            <h2 id="precip-table-heading">Historical Precipitation Data</h2>
+            <h2 id="precip-table-heading">Historical Precipitation Data (Last 90 Days)</h2>
             <table id="precip-table" role="grid" aria-label="Historical precipitation data table sorted by date descending">
                 <thead>
                     <tr>
