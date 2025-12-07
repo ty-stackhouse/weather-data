@@ -47,11 +47,64 @@ def run_test():
             # Navigate to the page
             page.goto('http://localhost:5000')
             
-            # Wait for the expected content to appear
+            # Test 1: Verify main heading exists
             try:
-                page.wait_for_selector('h1', timeout=1000)
+                heading = page.wait_for_selector('h1.main-heading', timeout=1000)
+                if not heading or "Overland Park Precipitation" not in heading.inner_text():
+                    print("Test failed: Main heading not found or incorrect")
+                    sys.exit(1)
             except Exception:
-                print("Test failed: Expected text not found")
+                print("Test failed: Main heading not found")
+                sys.exit(1)
+            
+            # Test 2: Verify data source text
+            try:
+                data_source = page.wait_for_selector('p.data-source', timeout=1000)
+                if not data_source or "NOAA ACIS" not in data_source.inner_text():
+                    print("Test failed: Data source text not found or incorrect")
+                    sys.exit(1)
+            except Exception:
+                print("Test failed: Data source text not found")
+                sys.exit(1)
+            
+            # Test 3: Verify today's precipitation section exists
+            try:
+                today_section = page.wait_for_selector('section[aria-labelledby="today-precip-heading"]', timeout=1000)
+                if not today_section:
+                    print("Test failed: Today's precipitation section not found")
+                    sys.exit(1)
+            except Exception:
+                print("Test failed: Today's precipitation section not found")
+                sys.exit(1)
+            
+            # Test 4: Verify historical data table exists
+            try:
+                table = page.wait_for_selector('#precip-table', timeout=1000)
+                if not table:
+                    print("Test failed: Precipitation table not found")
+                    sys.exit(1)
+            except Exception:
+                print("Test failed: Precipitation table not found")
+                sys.exit(1)
+            
+            # Test 5: Verify chart container exists
+            try:
+                chart = page.wait_for_selector('#chart', timeout=1000)
+                if not chart:
+                    print("Test failed: Chart container not found")
+                    sys.exit(1)
+            except Exception:
+                print("Test failed: Chart container not found")
+                sys.exit(1)
+            
+            # Test 6: Verify last updated text exists
+            try:
+                last_updated = page.wait_for_selector('.last-updated', timeout=1000)
+                if not last_updated:
+                    print("Test failed: Last updated text not found")
+                    sys.exit(1)
+            except Exception:
+                print("Test failed: Last updated text not found")
                 sys.exit(1)
             
             # Close browser
@@ -73,7 +126,7 @@ def run_test():
         sys.exit(1)
     
     # All checks passed
-    print("Test passed: No errors detected")
+    print("Test passed: All key elements present and no errors detected")
     sys.exit(0)
 
 if __name__ == "__main__":
