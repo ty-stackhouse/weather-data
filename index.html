@@ -85,7 +85,6 @@
     <script>
         // 1. URL to your raw CSV file
         const csvUrl = 'precipitation_data.csv';
-        let currentSort = { column: 'date', order: 'desc' }; // Default sort
 
         // 2. Fetch and Parse CSV
         Papa.parse(csvUrl, {
@@ -98,11 +97,8 @@
                 // Remove empty rows if any
                 const cleanData = data.filter(row => row.date && row.station_id);
 
-                // Filter out rows with zero precipitation and only include KOJC station
-                let nonZeroData = cleanData.filter(row => row.station_id === "KOJC" && parseFloat(row.precip_in) !== 0);
-
-                // Sort nonZeroData by date in descending order
-                nonZeroData.sort((a, b) => new Date(b.date) - new Date(a.date));
+                // Update global nonZeroData
+                nonZeroData = cleanData.filter(row => row.station_id === "KOJC" && parseFloat(row.precip_in) !== 0);
 
                 // 3. Group data by Station for Plotly
                 const stations = [...new Set(cleanData.map(d => d.station_id))];
@@ -123,27 +119,10 @@
                     yaxis: { title: 'Precipitation (in)' }
                 });
 
-                // Render Table
-                renderTable(nonZeroData);
-                sortTable('date'); // Default sort by date descending
+                // Initial table render
+                sortTable('date');
             }
         });
-
-        function sortTable(column) {
-            const order = (currentSort.column === column && currentSort.order === 'desc') ? 'asc' : 'desc';
-            currentSort = { column, order };
-
-            const sortedData = [...nonZeroData].sort((a, b) => {
-                if (column === 'date') {
-                    return order === 'desc' ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
-                } else if (column === 'precip_in') {
-                    return order === 'desc' ? b.precip_in - a.precip_in : a.precip_in - b.precip_in;
-                }
-                return 0;
-            });
-
-            renderTable(sortedData);
-        }
     </script>
 </body>
 </html>

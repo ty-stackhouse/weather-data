@@ -1,32 +1,39 @@
-function renderTable() {
-    const csvUrl = 'precipitation_data.csv';
-    Papa.parse(csvUrl, {
-        download: true,
-        header: true,
-        dynamicTyping: true,
-        complete: function(results) {
-            const data = results.data;
-            
-            // Remove empty rows if any
-            const cleanData = data.filter(row => row.date && row.station_id);
+let nonZeroData = []; // Global variable to store filtered data
 
-            // Filter out rows with zero precipitation
-            const nonZeroData = cleanData.filter(row => parseFloat(row.precip_in) !== 0);
+function renderTable(data) {
+    const tableBody = document.getElementById('table-body');
+    tableBody.innerHTML = '';
 
-            const tableBody = document.getElementById('table-body');
-            tableBody.innerHTML = '';
-
-            nonZeroData.forEach(row => {
-                const rowElement = document.createElement('tr');
-                rowElement.innerHTML = `
-                    <td>${row.date}</td>
-                    <td>${row.precip_in}</td>
-                `;
-                tableBody.appendChild(rowElement);
-            });
-        }
+    data.forEach(row => {
+        const rowElement = document.createElement('tr');
+        rowElement.innerHTML = `
+            <td>${row.date}</td>
+            <td>${row.precip_in}</td>
+        `;
+        tableBody.appendChild(rowElement);
     });
 }
 
-// Call the function when the window loads
-window.onload = renderTable;
+function sortTable(column) {
+    const order = (currentSort.column === column && currentSort.order === 'desc') ? 'asc' : 'desc';
+    currentSort = { column, order };
+
+    // Update sort indicators
+    document.querySelectorAll('#precip-table th span').forEach(span => span.textContent = '');
+    const indicator = order === 'desc' ? '▼' : '▲';
+    document.getElementById(`${column}-sort-indicator`).textContent = indicator;
+
+    const sortedData = [...nonZeroData].sort((a, b) => {
+        if (column === 'date') {
+            return order === 'desc' ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
+        } else if (column === 'precip_in') {
+            return order === 'desc' ? b.precip_in - a.precip_in : a.precip_in - b.precip_in;
+        }
+        return 0;
+    });
+
+    renderTable(sortedData);
+}
+
+// Initialize currentSort
+let currentSort = { column: 'date', order: 'desc' };
