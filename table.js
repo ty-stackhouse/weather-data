@@ -41,6 +41,7 @@ function sortTable(column) {
         return;
     }
 
+    // Determine if we're sorting ascending or descending
     const order = (currentSort.column === column && currentSort.order === 'desc') 
         ? 'asc' 
         : 'desc';
@@ -55,6 +56,7 @@ function sortTable(column) {
         if (column === 'date') {
             return order === 'desc' ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
         } else if (column === 'precip_in') {
+            // Numeric sort for precipitation
             return order === 'desc' ? b.precip_in - a.precip_in : a.precip_in - b.precip_in;
         }
         return 0;
