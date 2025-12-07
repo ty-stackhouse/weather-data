@@ -17,7 +17,7 @@ function renderTable(data) {
 
     // Update today's precipitation status
     const todayPrecip = data[0].precip_in;
-    const status = todayPrecip > 0 ? 'rain detected' : 'no rain';
+    const status = todayPrecip.toFixed(3) > 0 ? 'rain detected' : 'no rain';
     document.getElementById('today-precip-status').textContent = status;
 
     data.forEach(row => {
