@@ -1,6 +1,11 @@
 let nonZeroData = []; // Global variable to store filtered data
+let currentSort = { column: 'date', order: 'desc' }; // Initialize sort state
 
 function renderTable(data) {
+    if (!data || !data.length) {
+        console.log('No data to render');
+        return;
+    }
     const tableBody = document.getElementById('table-body');
     tableBody.innerHTML = '';
 
@@ -15,7 +20,19 @@ function renderTable(data) {
 }
 
 function sortTable(column) {
-    const order = (currentSort.column === column && currentSort.order === 'desc') ? 'asc' : 'desc';
+    if (!nonZeroData || !nonZeroData.length) {
+        console.log('No data to sort');
+        return;
+    }
+    
+    if (!column || typeof column !== 'string') {
+        console.log('Invalid column to sort by');
+        return;
+    }
+
+    const order = (currentSort && currentSort.column === column && currentSort.order === 'desc') 
+        ? 'asc' 
+        : 'desc';
     currentSort = { column, order };
 
     // Update sort indicators
@@ -35,5 +52,3 @@ function sortTable(column) {
     renderTable(sortedData);
 }
 
-// Initialize currentSort
-let currentSort = { column: 'date', order: 'desc' };
