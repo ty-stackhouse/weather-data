@@ -1,5 +1,5 @@
 let nonZeroData = []; // Global variable to store filtered data
-let currentSort = { column: 'date', order: 'desc' }; // Initialize sort state
+let currentSort = { column: 'date', order: 'asc' }; // Initialize sort state
 
 function renderTable(data) {
     if (!data || !data.length) {
