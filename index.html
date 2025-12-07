@@ -126,25 +126,24 @@
                 // Render Table
                 renderTable(nonZeroData);
                 sortTable('date'); // Default sort by date descending
-                let currentSort = { column: 'date', order: 'desc' }; // Default sort
-
-                function sortTable(column) {
-                    const order = (currentSort.column === column && currentSort.order === 'desc') ? 'asc' : 'desc';
-                    currentSort = { column, order };
-
-                    const sortedData = [...nonZeroData].sort((a, b) => {
-                        if (column === 'date') {
-                            return order === 'desc' ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
-                        } else if (column === 'precip_in') {
-                            return order === 'desc' ? b.precip_in - a.precip_in : a.precip_in - b.precip_in;
-                        }
-                        return 0;
-                    });
-
-                    renderTable(sortedData);
-                }
             }
         });
+
+        function sortTable(column) {
+            const order = (currentSort.column === column && currentSort.order === 'desc') ? 'asc' : 'desc';
+            currentSort = { column, order };
+
+            const sortedData = [...nonZeroData].sort((a, b) => {
+                if (column === 'date') {
+                    return order === 'desc' ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
+                } else if (column === 'precip_in') {
+                    return order === 'desc' ? b.precip_in - a.precip_in : a.precip_in - b.precip_in;
+                }
+                return 0;
+            });
+
+            renderTable(sortedData);
+        }
     </script>
 </body>
 </html>
