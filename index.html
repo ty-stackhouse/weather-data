@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Overland Park Precipitation</title>
-    <!-- Load Plotly.js (No installation needed, just a CDN link) -->
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-    <!-- Load PapaParse (To parse CSV easily) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- Load Plotly.js and PapaParse -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" defer></script>
     <style>
         body { font-family: sans-serif; max-width: 800px; margin: 20px auto; padding: 0 20px; }
         h1 { color: #333; }
@@ -41,31 +41,45 @@
     </style>
 </head>
 <body>
-    <h1>🌧️ Overland Park Precipitation</h1>
-    <p>Daily data from NOAA ACIS (Stations: KOJC, KIXD, KLWC, KMCI)</p>
-    <p>Last Updated: <span id="last-updated">Loading...</span></p>
+    <header>
+        <h1>🌧️ Overland Park Precipitation</h1>
+        <p>Daily data from NOAA ACIS (Stations: KOJC, KIXD, KLWC, KMCI)</p>
+    </header>
 
-    <p id="today-precip">Today's precipitation so far is 0 in</p>
-    <table id="precip-table">
-        <thead>
-            <tr>
-                <th onclick="sortTable('date')">
-                    Date 
-                    <span id="date-sort-indicator">▼</span>
-                </th>
-                <th onclick="sortTable('precip_in')">
-                    Precipitation (in)
-                    <span id="precip-sort-indicator"></span>
-                </th>
-            </tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-    </table>
+    <main>
+        <section aria-labelledby="today-precip-heading">
+            <h2 id="today-precip-heading">Today's Precipitation</h2>
+            <p id="today-precip">Today's precipitation so far is 0 in</p>
+        </section>
+        <section aria-labelledby="precip-table-heading">
+            <h2 id="precip-table-heading">Historical Precipitation Data</h2>
+            <table id="precip-table" role="grid">
+                <thead>
+                    <tr>
+                        <th scope="col" onclick="sortTable('date')" role="columnheader" aria-sort="descending">
+                            Date 
+                            <span id="date-sort-indicator">▼</span>
+                        </th>
+                        <th scope="col" onclick="sortTable('precip_in')" role="columnheader" aria-sort="none">
+                            Precipitation (in)
+                            <span id="precip-sort-indicator"></span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="table-body" role="rowgroup"></tbody>
+            </table>
+        </section>
 
-    <div id="chart"></div>
+        <section aria-labelledby="precip-chart-heading">
+            <h2 id="precip-chart-heading">Precipitation Trends</h2>
+            <div id="chart" role="img" aria-label="Line chart showing daily precipitation accumulation"></div>
+        </section>
+    </main>
 
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <footer>
+        <p>Last Updated: <span id="last-updated">Loading...</span></p>
+    </footer>
+
     <script src="table.js"></script>
 
     <script>
