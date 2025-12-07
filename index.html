@@ -42,18 +42,18 @@
 </head>
 <body>
     <header>
-        <h1>🌧️ Overland Park Precipitation</h1>
-        <p>Daily data from NOAA ACIS (Stations: KOJC, KIXD, KLWC, KMCI)</p>
+        <h1 id="page-title">🌧️ Overland Park Precipitation</h1>
+        <p id="data-source">Daily data from NOAA ACIS (Stations: KOJC, KIXD, KLWC, KMCI)</p>
     </header>
 
     <main>
         <section aria-labelledby="today-precip-heading">
             <h2 id="today-precip-heading">Today's Precipitation</h2>
-            <p id="today-precip">Today's precipitation so far is 0 in</p>
+            <p id="today-precip" aria-live="polite">Today's precipitation so far is <span id="today-precip-amount">0</span> inches</p>
         </section>
         <section aria-labelledby="precip-table-heading">
             <h2 id="precip-table-heading">Historical Precipitation Data</h2>
-            <table id="precip-table" role="grid">
+            <table id="precip-table" role="grid" aria-label="Historical precipitation data table sorted by date descending">
                 <thead>
                     <tr>
                         <th scope="col" onclick="sortTable('date')" role="columnheader" aria-sort="descending">
@@ -77,7 +77,7 @@
     </main>
 
     <footer>
-        <p>Last Updated: <span id="last-updated">Loading...</span></p>
+        <p>Last Updated: <span id="last-updated" aria-live="polite">Loading...</span></p>
     </footer>
 
     <script src="table.js"></script>
