@@ -137,10 +137,10 @@
                 const data = results.data;
                 
                 // Remove empty rows if any
-                const cleanData = data.filter(row => row.date && row.station_id);
+                const cleanData = data.filter(row => row.date && row.station_id && row.precip_in !== undefined);
 
                 // Update global nonZeroData
-                nonZeroData = cleanData.filter(row => row.station_id === "KOJC" && parseFloat(row.precip_in) !== 0);
+                nonZeroData = cleanData.filter(row => row.station_id === "KOJC" && row.precip_in !== null && parseFloat(row.precip_in) !== 0);
 
                 // 3. Group data by Station for Plotly
                 const stations = [...new Set(cleanData.map(d => d.station_id))];
