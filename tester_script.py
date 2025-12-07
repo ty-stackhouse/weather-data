@@ -88,14 +88,14 @@ def run_test():
                 print("Test failed: Precipitation table not found")
                 sys.exit(1)
 
-            # Test 5: Verify table is sorted by date descending by default
+            # Test 5: Verify table is sorted by date ascending by default
             try:
                 date_cells = page.locator('#precip-table tbody tr td:first-child').all()
                 dates = [datetime.datetime.strptime(cell.inner_text(), '%Y-%m-%d') for cell in date_cells]
                 print("Found dates:", [d.strftime('%Y-%m-%d') for d in dates])
-                if dates != sorted(dates, reverse=True):
-                    print("Test failed: Table not sorted by date descending by default")
-                    print("Expected descending order:", [d.strftime('%Y-%m-%d') for d in sorted(dates, reverse=True)])
+                if dates != sorted(dates):
+                    print("Test failed: Table not sorted by date ascending by default")
+                    print("Expected ascending order:", [d.strftime('%Y-%m-%d') for d in sorted(dates)])
                     sys.exit(1)
             except Exception as e:
                 print(f"Test failed: Could not verify date sorting - {e}")
