@@ -4,6 +4,7 @@
 # Detects console errors and verifies page content
 
 import sys
+import datetime
 from playwright.sync_api import sync_playwright
 import server_manager
 
@@ -86,8 +87,19 @@ def run_test():
             except Exception:
                 print("Test failed: Precipitation table not found")
                 sys.exit(1)
+
+            # Test 5: Verify table is sorted by date descending by default
+            try:
+                date_cells = page.locator('#precip-table tbody tr td:first-child').all()
+                dates = [datetime.datetime.strptime(cell.inner_text(), '%Y-%m-%d') for cell in date_cells]
+                if dates != sorted(dates, reverse=True):
+                    print("Test failed: Table not sorted by date descending by default")
+                    sys.exit(1)
+            except Exception as e:
+                print(f"Test failed: Could not verify date sorting - {e}")
+                sys.exit(1)
             
-            # Test 5: Verify chart container exists
+            # Test 6: Verify chart container exists
             try:
                 chart = page.wait_for_selector('#chart', timeout=1000)
                 if not chart:
@@ -97,7 +109,7 @@ def run_test():
                 print("Test failed: Chart container not found")
                 sys.exit(1)
             
-            # Test 6: Verify last updated text exists
+            # Test 7: Verify last updated text exists
             try:
                 last_updated = page.wait_for_selector('.last-updated', timeout=1000)
                 if not last_updated:
