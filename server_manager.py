@@ -54,4 +54,13 @@ def stop_server():
         print("Server stopped.")
 
 # Register cleanup function to ensure server is stopped
+
+if __name__ == "__main__":
+    start_server()
+    # Keep the script running to keep the server alive
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        stop_server()
 atexit.register(stop_server)
