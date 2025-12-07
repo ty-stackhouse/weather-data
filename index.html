@@ -70,23 +70,10 @@
 
     <script>
         // 1. URL to your raw CSV file
-        // When running locally, use relative path. On GitHub, it works the same.
         const csvUrl = 'precipitation_data.csv';
+        let currentSort = { column: 'date', order: 'desc' }; // Default sort
 
         // 2. Fetch and Parse CSV
-        
-        // Fetch today's precipitation data
-        const todayCsvUrl = 'today_precipitation_data.csv';
-        Papa.parse(todayCsvUrl, {
-            download: true,
-            header: true,
-            dynamicTyping: true,
-            complete: function(todayResults) {
-                const todayData = todayResults.data;
-                const todayPrecip = todayData.length > 0 ? todayData[0].precip_in : 0; // Get the precipitation value
-                document.getElementById('today-precip').textContent = `Today's precipitation so far is ${todayPrecip} inches`;
-            }
-        });
         Papa.parse(csvUrl, {
             download: true,
             header: true,
@@ -145,28 +132,6 @@
             }
         });
 
-        function renderTable(data) {
-    const tableBody = document.getElementById('table-body');
-    tableBody.innerHTML = ''; // Clear existing rows
-
-    data.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${row.date}</td><td>${row.precip_in}</td>`;
-        tableBody.appendChild(tr);
-    });
-
-    // Update last updated date after rendering the table
-    if (data.length > 0) {
-        const lastDate = data[0].date;
-        document.getElementById('last-updated').textContent = lastDate;
-    }
-
-    // Update sorting indicators
-    document.getElementById('date-sort-indicator').textContent = 
-        currentSort.column === 'date' ? (currentSort.order === 'desc' ? '▼' : '▲') : '';
-    document.getElementById('precip-sort-indicator').textContent = 
-        currentSort.column === 'precip_in' ? (currentSort.order === 'desc' ? '▼' : '▲') : '';
-}
             }
         });
     </script>
